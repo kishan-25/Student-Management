@@ -83,4 +83,4 @@ src/
 
 ## Note
 
-This project uses mock services to simulate API calls and authentication. In a real-world application, these would be replaced with actual backend services.
+This project uses mock services to simulate API calls and authentication.
