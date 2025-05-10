@@ -37,6 +37,16 @@ src/
 
 - Node.js
 - npm or yarn
+- Firebase account
+
+### Firebase Setup
+
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Create a new project
+3. Add a web app to your project
+4. Enable Authentication under "Build" > "Authentication"
+5. Set up Email/Password sign-in method
+6. Copy your Firebase configuration
 
 ### Installation
 
@@ -45,7 +55,13 @@ src/
    ```
    npm install
    ```
-3. Start the development server:
+3. Create a `.env` file based on `.env.example` and add your Firebase configuration:
+   ```
+   REACT_APP_FIREBASE_API_KEY=your_actual_api_key
+   REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+   ... (and so on)
+   ```
+4. Start the development server:
    ```
    npm start
    ```
@@ -62,8 +78,8 @@ src/
 
 - React for the UI components
 - Tailwind CSS for styling
-- Mock API service with simulated network delays
-- Mock Firebase authentication
+- Mock API service with simulated network delays for student data
+- Real Firebase authentication integrated with the application
 
 ## Note
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const LoginModal = ({ onClose, onLogin }) => {
   const [credentials, setCredentials] = useState({
@@ -35,10 +35,17 @@ const LoginModal = ({ onClose, onLogin }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const [authError, setAuthError] = useState('');
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      onLogin(credentials);
+      try {
+        setAuthError('');
+        await onLogin(credentials);
+      } catch (error) {
+        setAuthError(error.message);
+      }
     }
   };
 
@@ -101,8 +108,14 @@ const LoginModal = ({ onClose, onLogin }) => {
             </button>
           </div>
           
+          {authError && (
+            <div className="mt-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+              {authError}
+            </div>
+          )}
+          
           <div className="mt-4 text-sm text-gray-600 border-t pt-4">
-            <p>For demo purposes, use any valid email and password (min 6 characters)</p>
+            <p>Enter your Firebase email and password (min 6 characters)</p>
           </div>
         </form>
       </div>

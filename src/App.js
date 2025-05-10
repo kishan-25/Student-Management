@@ -6,8 +6,9 @@ import LoadingSpinner from './components/LoadingSpinner';
 import AddStudentModal from './components/modals/AddStudentModal';
 import LoginModal from './components/modals/LoginModal';
 import StudentDetailModal from './components/modals/StudentDetailModal';
+import FirebaseAuthObserver from './components/FirebaseAuthObserver';
 import { fetchStudents, addStudent } from './services/mockApi';
-import { login, logout } from './services/mockFirebase';
+import { login, logout, getCurrentUser } from './services/firebase';
 
 export default function App() {
   const [students, setStudents] = useState([]);
@@ -20,24 +21,52 @@ export default function App() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [user, setUser] = useState(null);
 
-  // Fetch students on initial load
+  // Check auth state on initial load
   useEffect(() => {
-    const loadData = async () => {
+    const checkAuth = async () => {
+      try {
+        // Check if user is already logged in
+        const currentUser = await getCurrentUser();
+        if (currentUser) {
+          setUser(currentUser);
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    checkAuth();
+  }, []);
+
+  // Fetch students when user authentication state changes
+  useEffect(() => {
+    const loadStudents = async () => {
+      if (!user) {
+        setStudents([]);
+        setFilteredStudents([]);
+        setError('Please login to get the student list');
+        return;
+      }
+
       try {
         setLoading(true);
+        setError(null);
+        // Load students data
         const data = await fetchStudents();
         setStudents(data);
         setFilteredStudents(data);
       } catch (err) {
-        setError('Failed to load students');
+        setError('Failed to load students data');
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
     
-    loadData();
-  }, []);
+    loadStudents();
+  }, [user]); // Re-run when user changes
 
   // Filter students when course changes
   useEffect(() => {
@@ -139,6 +168,10 @@ export default function App() {
             <div className="flex justify-center py-12">
               <LoadingSpinner />
             </div>
+          ) : error && !user ? (
+            <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+              {error}
+            </div>
           ) : error ? (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
               {error}
@@ -153,6 +186,9 @@ export default function App() {
       </main>
       
       <Footer />
+      
+      {/* Observer component for Firebase Auth debugging - no visual output */}
+      <FirebaseAuthObserver />
       
       {showAddModal && (
         <AddStudentModal 

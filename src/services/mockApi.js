@@ -1,4 +1,3 @@
-
 const mockStudents = [
   {
     id: 1001,
@@ -56,29 +55,25 @@ const mockStudents = [
   },
 ];
 
-
 const delay = (ms = 800) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const fetchStudents = async () => {
- 
   await delay();
   
-  
-  if (Math.random() < 0.1) {
-    throw new Error('Failed to fetch students data');
+  // Reduced failure rate to make testing easier
+  if (Math.random() < 0.05) {
+    throw new Error('Network error: Failed to fetch students data');
   }
   
   return [...mockStudents];
 };
 
 export const addStudent = async (student) => {
-
   await delay();
 
-  if (Math.random() < 0.1) {
-    throw new Error('Failed to add student');
+  if (Math.random() < 0.05) {
+    throw new Error('Network error: Failed to add student');
   }
-  
 
   const newStudent = {
     ...student,
